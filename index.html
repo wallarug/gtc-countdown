@@ -1,0 +1,178 @@
+<html>
+<head>
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+	<link rel="stylesheet" href="css/jquery.mobile.structure-1.4.5.min.css" />
+	
+	<!-- Javascript -->
+	<script type='text/javascript' src="js/jquery-2.1.4.min.js"></script>
+	<script type='text/javascript' src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script>
+    // Set the date we're counting down to
+    var countDownDate = new Date("Jan 8, 2025 08:00:00").getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+
+      // Get today's date and time
+      var now = new Date().getTime();
+
+      // Find the distance between now and the count down date
+      var distance = countDownDate - now;
+
+      // Time calculations for days, hours, minutes and seconds
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // Display the result in the element with id="demo"
+      document.getElementById("demo").innerHTML = days + " days </br>" + hours + " h "
+      + checkTime(minutes) + " m " + checkTime(seconds) + " s ";
+
+      // If the count down is finished, write some text
+      if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("demo").innerHTML = "Open and Operational";
+        document.getElementById("comment1").innerHTML = "We are now open and operational at Rozelle";
+      }
+    }, 1000);
+    
+    /*
+     *  Helper function for formatting numbers.
+     */
+    function checkTime(i) {
+      if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+      return i;
+    }
+
+    /*
+      *  Function for calculating the number of performances left based on dates and weekends
+      */
+     // Let's Kill Agatha Christie - 2 left (7th June 2024, 8th June 2024)
+     // Hay Fever - 17 left (22 June 2024 to 27 July 2024)
+     // Murder on the Nile - 19 left (10 August 2024 to 21 September 2024)
+     // Jane Ayre - 17 Left (4 October 2024 to 10 November 2024)
+    function PerformancesLeft() {
+      // Get today's date and time
+      var now = new Date().getTime();
+
+      // Let's Kill Agatha Christie - 2 left (7th June 2024, 8th June 2024)
+      var agathaChristieDates = getDatesInRange(new Date("June 7, 2024"), new Date("June 8, 2024"));
+      var agathaChristiePerformances = filterWeekendDates(agathaChristieDates);
+  
+      // check how many left
+      var ag_inrange = agathaChristiePerformances.length;
+      if (ag_inrange > 0) {
+        document.getElementById("agatha-christie-left").innerHTML = ag_inrange;
+      }else {
+        document.getElementById("lkac-listview").style = "display: none;";
+      }
+
+      // Hay Fever - 17 left (22 June 2024 to 27 July 2024)
+      var hayFeverDates = getDatesInRange(new Date("June 22, 2024"), new Date("July 27, 2024"));
+      var hayFeverPerformances = filterWeekendDates(hayFeverDates);
+
+      // check how many left
+      var hf_inrange = hayFeverPerformances.length;
+      if (hf_inrange > 0) {
+        document.getElementById("hay-fever-left").innerHTML = hf_inrange;
+      }else {
+        document.getElementById("hay-fever-listview").style = "display: none;";
+      }
+
+      // Murder on the Nile - 19 left (10 August 2024 to 21 September 2024)
+      var murderOnTheNileDates = getDatesInRange(new Date("August 10, 2024"), new Date("September 21, 2024"));
+      var murderOnTheNilePerformances = filterWeekendDates(murderOnTheNileDates);
+
+      // check how many left
+      var nile_inrange = murderOnTheNilePerformances.length;
+      if (hf_inrange > 0) {
+        document.getElementById("nile-left").innerHTML = nile_inrange;
+      }else {
+        document.getElementById("nile-listview").style = "display: none;";
+      }
+
+      // Jane Ayre - 17 Left (4 October 2024 to 10 November 2024)
+      var janeAyreDates = getDatesInRange(new Date("October 4, 2024"), new Date("November 10, 2024"));
+      var janeAyrePerformances = filterWeekendDates(janeAyreDates);
+
+      // check how many left
+      var ja_inrange = janeAyrePerformances.length;
+      if (ja_inrange > 0) {
+        document.getElementById("jane-ayre-left").innerHTML = hf_inrange;
+      }else {
+        document.getElementById("jane-ayre-listview").style = "display: none;";
+      }
+
+      // Combine all performances
+      var allPerformances = agathaChristiePerformances.concat(hayFeverPerformances, murderOnTheNilePerformances, janeAyrePerformances);
+
+      // Count the remaining performances
+      var remainingPerformances = allPerformances.filter(function(date) {
+        return date.getTime() > now;
+      });
+
+      // Display the number of remaining performances
+      document.getElementById("performances-left").innerHTML = remainingPerformances.length;
+    }
+
+    // Helper function to get all dates in a range
+    function getDatesInRange(startDate, endDate) {
+      var dates = [];
+      var currentDate = startDate;
+      while (currentDate <= endDate) {
+        dates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return dates;
+    }
+
+    // Helper function to filter weekend dates (Friday, Saturday, Sunday)
+    function filterWeekendDates(dates) {
+      return dates.filter(function(date) {
+        var day = date.getDay();
+        return day === 5 || day === 6 || day === 0; // 5 = Friday, 6 = Saturday, 0 = Sunday
+      });
+    }
+
+    $(document).ready(function() {
+      PerformancesLeft();
+    });
+    </script>
+
+</head>
+<body>
+    <div data-role="page" data-theme="b" id="demo-page" class="my-page">
+     
+        <!-- <div data-role="header"> -->
+            <!-- <h1>Merger Countdown</h1> -->
+        <!-- </div> -->
+
+        <div style="background-color: #FFFFFF;">
+            <img src="img/logo.png" style="margin:auto; text-align:center; display: block" />
+            <p style="text-align:center; font-size:100px" id="demo"></p>
+        </div>
+
+        <div data-role="content">
+            <p style="text-align:center; font-size:20px" id="comment1">...still operating at 420 Kent St, until the move to the new theatre @ Rozelle</p>
+            <p style="text-align:center; font-size:20px">2 Gordon St, Rozelle</p>
+            <br />
+
+            <h2 style="text-align:center">Performances Left: <span id="performances-left"></span></h2>
+            <br />
+            <!-- Create a list of shows and elements to store the number of performances left, if the dates / shows is zero, then hide the element -->
+             <ul style="text-align:center; list-style-type: none;">
+                <li id="lkac-listview">Let's Kill Agatha Christie - <span id="agatha-christie-left"></span></li>
+                <li id="hay-fever-listview">Hay Fever - <span id="hay-fever-left"></span></li>
+                <li id="nile-listview">Murder on the Nile - <span id="nile-left"></span></li>
+                <li id="jane-ayre-listview">Jane Ayre - <span id="jane-ayre-left"></span></li>
+             </ul>
+
+            
+
+        </div>
+    
+    </div>
+<body>
+</html>
